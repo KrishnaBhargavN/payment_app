@@ -36,6 +36,12 @@ async function main() {
           provider: "HDFC Bank",
         },
       },
+      Balance: {
+        create: {
+          amount: 1000,
+          locked: 0,
+        },
+      },
     },
   });
   console.log({ alice, bob });

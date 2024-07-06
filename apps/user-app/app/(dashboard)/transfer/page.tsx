@@ -12,6 +12,12 @@ async function getBalance() {
       userId: Number(session?.user?.id),
     },
   });
+  if (!balance) {
+    return {
+      amount: 0,
+      locked: 0,
+    };
+  }
   return {
     amount: balance?.amount || 0,
     locked: balance?.locked || 0,

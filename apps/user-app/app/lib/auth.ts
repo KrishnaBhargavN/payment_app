@@ -48,6 +48,24 @@ export const authOptions = {
               password: hashedPassword,
             },
           });
+          // const onramp = await db.onRampTransaction.create({
+          //   data: {
+          //     startTime: new Date(),
+          //     status: "Success",
+          //     amount: 0,
+          //     token: "1243",
+          //     provider: "HDFC Bank",
+          //     userId: user.id,
+          //   },
+          // });
+
+          const balance = await db.balance.create({
+            data: {
+              amount: 0,
+              locked: 0,
+              userId: user.id,
+            },
+          });
 
           return {
             id: user.id.toString(),

@@ -1,28 +1,29 @@
-import express from "express";
-import db from "@repo/db/client";
+import express, { Request, Response } from "express";
+import prisma from "@repo/db/client";
 
 const app = express();
+app.use(express.json());
 const port = 8080;
 
-app.post("/bankWebhook", async (req, res) => {
+app.post("/bankWebhook", async (req: Request, res: Response) => {
   const paymentinfo = {
     token: req.body.token,
     amount: req.body.amount,
     userId: req.body.userId,
   };
   try {
-    await db.$transaction([
-      db.balance.updateMany({
+    await prisma.$transaction([
+      prisma.balance.updateMany({
         where: {
           userId: Number(paymentinfo.userId),
         },
         data: {
           amount: {
-            increment: paymentinfo.amount,
+            increment: Number(paymentinfo.amount),
           },
         },
       }),
-      db.onRampTransaction.updateMany({
+      prisma.onRampTransaction.updateMany({
         where: {
           token: paymentinfo.token,
         },
@@ -31,6 +32,7 @@ app.post("/bankWebhook", async (req, res) => {
         },
       }),
     ]);
+    console.log("success");
 
     res.json({
       message: "captured",
@@ -43,4 +45,14 @@ app.post("/bankWebhook", async (req, res) => {
   }
 });
 
-app.listen(port);
+app.post("/test", (req, res) => {
+  console.log(req.body);
+
+  res.json({
+    message: "Hello World",
+  });
+});
+
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});
